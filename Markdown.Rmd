@@ -1,0 +1,82 @@
+---
+title: "Predicting Exercising manner with classification methods"
+author: "K S Raghuram"
+date: "31 March 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Backgroud Check
+
+Majority of the attention in human activity recognition research focuses on discrimination between different type of activities, but not quality of the activities. In this study, the goal is to investigate how well an activity was performed by six wearers of electronic devices. These six participants were between 20 to 28 years with little weight lifting experience. They were asked to perform one set of 10 repetitions of the Unilateral Dumbbell Biceps Curl in five different fashions, namely
+
+Class A: exactly according to the specification
+Class B: throwing the elbows to the front
+Class C: lifting the dumbbell only halfway
+Class D: lowering the dumbbell only half way
+Class E: throwing the hips to the front.
+
+Notice that only class A corresponds to the specified execution of the exercise, and others correspond to common mistakes. To ensure the quality of data, an experienced weight lifter was there to supervise the participants
+
+
+
+## Goal
+
+The goal of this project is to predict the manner in which the participants did the exercise. In other words, we need to predict the different fashions of the Unilateral Dumbbell Biceps crul performed by the participants. It is the classe varaible in the dataset, and we can use any of the other variables to predict with.
+
+## Content
+
+## Getting Started
+
+### Set the directory
+
+First lets set up the directory. 
+
+```{r}
+setwd("C:/Users/raghu/Desktop/Coursera/ML")
+```
+
+### Installing and Loading the packages
+
+These are the packages which will be needed for the codes to run with the appropriate accuracy. 
+
+```{r}
+install.packages("ggplot2")
+install.packages("caret")
+library(caret)
+library(ggplot2)
+library(randomForest)
+```
+
+### Reading the train and test data 
+
+```{r}
+train <- read.csv("train.csv")
+test <- read.csv("test.csv")
+```
+
+## Processing the data 
+
+When we closely look at the data, we see many of the predictors have empty strings as their values and it doesnt make any sense converting them into "NA" values and then replacing them with the zero or mean of the columns. So, we directly delete them from the train data set. 
+
+```{r}
+train <- train[,-c(12,13,14,15,16,17,20,23,26,69,70,71,72,73,74,87,88,89,90,91,92,95,98,101,125,126,127,128,129,130,133,136,139)]
+```
+
+Now we have to replace the "NA" values with either the zero or the mean or the median of their respective columns and after many experiments, I have concluded that we should impute the values with zero. 
+
+```{r}
+train[is.na(train)] <- 0
+```
+
+There are many predictors which dont explain any variance, i.e. the values of the columns are factors of only 1 level, so that means that the variance would be nearly zero. There is a function in the {caret} package which explains the work we want to do. This is called removing the nearly zero variance showing predictors from the data.
+
+```{r}
+nzv <- nearZeroVar(train, saveMetrics = FALSE)
+train <- train[,-nzv]
+```
+
+
