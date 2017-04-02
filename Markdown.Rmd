@@ -79,4 +79,78 @@ nzv <- nearZeroVar(train, saveMetrics = FALSE)
 train <- train[,-nzv]
 ```
 
+### Centering and scaling 
+
+As the metrics of the data columns are not known to us, we shoud always normalize the data for proper results. In the "preProcess" function, we have the centering and scaling option which divides normalizes each data point. 
+
+```{r}
+mod <- preProcess(training, method = c("center", "scale"))
+
+
+training <- predict(mod, training)
+testing <- predict(mod, testing)
+
+```
+
+### Data Partitioning 
+
+As we are all set with the preprocessing of the data we had, we go with the data partitioning where we divide our data into 60% training data and 40% testing data using {createDataPartition} from the caret package. 
+
+```{r}
+intrain <- createDataPartition(train$classe, p = 0.6, list = FALSE)
+
+training <- train[intrain,]
+testing <- train[-intrain,]
+```
+
+## Feature Selection 
+
+As we are left with the 58 predictor variables and 1 response variable, lets narrow down the number of predictors to less than 15-20. SO, there is a recursive feature elimination method which uses backward process of selection of features using Random forest algorithm for k = 2 in the cross validation. It keeps on adding one predictor and for each set, calculates the  accuracy and thereby selects the best accurate result. 
+
+```{r}
+control <- rfeControl(functions=rfFuncs, method="cv", number=2)
+
+results <- rfe(training[,1:57], training[,58], sizes=c(1:57), rfeControl=control)
+
+print(results)
+
+predictors(results)
+```
+
+### Final Features 
+
+As we see from the results that there are __ important features which are having the major impact on the accuracy achieved in this rfe random forest algorithm. We will use these features to predict the final results and thereby finding the rmse value or the accuracy value. 
+We have used the random forest algorithm because from various experiments, we know that random forest has the highest accuracy as compared to the normal decision trees or the linear models. 
+
+So, random forest is applied to these __ important predictors. 
+
+```{r}
+ranfo <- randomForest( classe~raw_timestamp_part_1 + cvtd_timestamp + roll_belt+num_window + magnet_dumbbell_z + magnet_dumbbell_y,
+                      data = training, do.trace = 100)
+print(fit_rf, digits = 4)
+```
+
+Then we predict and thereby find the accuracy with the intrain testing model. 
+
+```{r}
+pred <- predict(ranfo, testing, type = "class")
+
+confusionMatrix(pred, testing$classe)
+```
+
+## Out of sample error 
+
+The algorithm's accuracy turned out to be __. so, the out of sample error would be 1- __ = __. 
+
+## Prediction 
+
+Prediction is also made for the 20 samples given out as the actual test data. We will first read the data and then predictthe ranfo model onto it. 
+```{r}
+testData <- read.csv("test.csv")
+```
+
+```{r}
+predict(ranfo, testData)
+
+```
 
