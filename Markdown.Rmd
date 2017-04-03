@@ -125,7 +125,7 @@ print(fit_rf, digits = 4)
 
 Then we predict and thereby find the accuracy with the intrain testing model. 
 
-```{r}
+```{r, echo=FALSE}
 pred <- predict(ranfo, testing, type = "class")
 
 confusionMatrix(pred, testing$classe)
