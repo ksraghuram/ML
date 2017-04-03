@@ -1,7 +1,7 @@
 train <- read.csv("train.csv")
 
 train <- train[,-c(12,13,14,15,16,17,20,23,26,69,70,71,72,73,74,87,88,89,90,91,92,95,98,101,125,126,127,128,129,130,133,136,139)]
-
+install.packages("caret")
 library(caret)
 library(ggplot2)
 library(randomForest)
@@ -28,8 +28,9 @@ training <- predict(mod, training)
 testing <- predict(mod, testing)
 
 training <- training[,-1]
-
+install.packages("e1071")
 library(ggplot2)
+library(e1071)
 
 control <- rfeControl(functions=rfFuncs, method="cv", number=2)
 
@@ -40,8 +41,8 @@ print(results)
 predictors(results)
 
 
-ranfo <- randomForest( classe~raw_timestamp_part_1 + cvtd_timestamp + roll_belt+num_window + magnet_dumbbell_z + magnet_dumbbell_y,
-                      data = training, do.trace = 50)
+ranfo <- randomForest( classe~raw_timestamp_part_1 + cvtd_timestamp + roll_belt+num_window ,
+                      data = training, do.trace = 100)
 
 pred <- predict(ranfo, testing, type = "class")
 
@@ -55,3 +56,7 @@ str(trainloan)
 trainloan[,c(1,4,5,6,7,10,11)] <- as.numeric(trainloan[,c(1,4,5,6,7,10,11)])
 
 trainloan[,14] <- as.integer(trainloan[,14])
+
+
+testData$classe <- c("NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA")
+testData$classe <- as.factor(testData$classe)

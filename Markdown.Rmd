@@ -2,12 +2,8 @@
 title: "Predicting Exercising manner with classification methods"
 author: "K S Raghuram"
 date: "31 March 2017"
-output: html_document
+output: word_document
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 ## Backgroud Check
 
@@ -27,8 +23,6 @@ Notice that only class A corresponds to the specified execution of the exercise,
 
 The goal of this project is to predict the manner in which the participants did the exercise. In other words, we need to predict the different fashions of the Unilateral Dumbbell Biceps crul performed by the participants. It is the classe varaible in the dataset, and we can use any of the other variables to predict with.
 
-## Content
-
 ## Getting Started
 
 ### Set the directory
@@ -44,8 +38,7 @@ setwd("C:/Users/raghu/Desktop/Coursera/ML")
 These are the packages which will be needed for the codes to run with the appropriate accuracy. 
 
 ```{r}
-install.packages("ggplot2")
-install.packages("caret")
+
 library(caret)
 library(ggplot2)
 library(randomForest)
@@ -119,13 +112,13 @@ predictors(results)
 
 ### Final Features 
 
-As we see from the results that there are __ important features which are having the major impact on the accuracy achieved in this rfe random forest algorithm. We will use these features to predict the final results and thereby finding the rmse value or the accuracy value. 
+As we see from the results that there are 4 important features which are having the major impact on the accuracy achieved in this rfe random forest algorithm. We will use these features to predict the final results and thereby finding the rmse value or the accuracy value. 
 We have used the random forest algorithm because from various experiments, we know that random forest has the highest accuracy as compared to the normal decision trees or the linear models. 
 
-So, random forest is applied to these __ important predictors. 
+So, random forest is applied to these 4 important predictors. 
 
 ```{r}
-ranfo <- randomForest( classe~raw_timestamp_part_1 + cvtd_timestamp + roll_belt+num_window + magnet_dumbbell_z + magnet_dumbbell_y,
+ranfo <- randomForest( classe~raw_timestamp_part_1 + cvtd_timestamp + roll_belt+num_window ,
                       data = training, do.trace = 100)
 print(fit_rf, digits = 4)
 ```
@@ -140,11 +133,11 @@ confusionMatrix(pred, testing$classe)
 
 ## Out of sample error 
 
-The algorithm's accuracy turned out to be __. so, the out of sample error would be 1- __ = __. 
+The algorithm's accuracy turned out to be 0.9985. so, the out of sample error would be 1- 0.9985 = 0.002. 
 
 ## Prediction 
 
-Prediction is also made for the 20 samples given out as the actual test data. We will first read the data and then predictthe ranfo model onto it. 
+Prediction is also made for the 20 samples given out as the actual test data. We will first read the data and then predict the ranfo model onto it. 
 ```{r}
 testData <- read.csv("test.csv")
 ```
