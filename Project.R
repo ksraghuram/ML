@@ -41,7 +41,7 @@ print(results)
 predictors(results)
 
 
-ranfo <- randomForest( classe~raw_timestamp_part_1 + cvtd_timestamp + roll_belt+num_window ,
+ranfo <- randomForest( classe~. ,
                       data = training, do.trace = 100)
 
 pred <- predict(ranfo, testing, type = "class")
@@ -56,7 +56,38 @@ str(trainloan)
 trainloan[,c(1,4,5,6,7,10,11)] <- as.numeric(trainloan[,c(1,4,5,6,7,10,11)])
 
 trainloan[,14] <- as.integer(trainloan[,14])
+testd <- read.csv("test.csv")
+
+testd$classe1 <- c("NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA")
+testd$classe1 <- as.factor(testd$classe)
 
 
-testData$classe <- c("NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA")
-testData$classe <- as.factor(testData$classe)
+testd$classe
+maintest <- data.frame(c(testd$raw_timestamp_part_1 , testd$cvtd_timestamp, testd$num_window, testd$roll_belt , testd$classe))
+
+predictionmain <- predict(ranfo, testd)
+
+
+testdata <- data.frame("raw_timestamp_part_1 "," cvtd_timestamp"," num_window"," roll_belt" , "classe")
+testdata <- as.data.frame(testdata)
+testdata <- testd[testdata]
+
+
+str(training$roll_belt)
+
+levels(testd$cvtd_timestamp) = levels(training$cvtd_timestamp)
+
+
+totalData <- rbind(trainData, testData)
+for (f in 1:length(names(totalData))) {
+  levels(trainData[, f]) <- levels(totalData[, f])
+}
+
+
+qnorm(0.975)
+
+
+
+4
+3
+predictionmain
